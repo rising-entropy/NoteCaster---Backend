@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from deta import Deta
 from pydantic import BaseModel
 import hashlib
+import jwt
+from datetime import datetime, timedelta
 
 # pydantic to declare body of put or post
 app = FastAPI()
@@ -18,6 +20,10 @@ class User(BaseModel):
     lName: str
     username: str
     email: str
+    password: str
+    
+class Login(BaseModel):
+    username: str
     password: str
 
 @app.post("/api/signup")
@@ -43,11 +49,19 @@ def signup(user: User):
             "status": 409,
             "message": "User already exists."
         })
+        
+    JWT_SECRET = 'UnaiSimon$$$'
+    JWT_SECRET += user.username
+    JWT_ALGORITHM = 'HS256'
+    JWT_EXP_DELTA_SECONDS = 2628000
+    payload = {'exp': datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)}        
+    jwt_token = jwt.encode(payload, JWT_SECRET, JWT_ALGORITHM)
     
     return({
         "status": 201,
         "message": "User created successfully.",
-        "key": newuser.key,
+        "token": jwt_token,
+        "key": user.username,
         "fName": user.fName,
         "lName": user.lName,
         "username": user.username,
