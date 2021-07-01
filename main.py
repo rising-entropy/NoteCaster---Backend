@@ -187,3 +187,19 @@ def updateproject(key: str, subject: Subject):
             "message": "Project Does not Exist"
         })
 
+@app.delete("/api/subject/{key}")
+def getproject(key: str):
+    
+    try:
+        subjectdb = deta.Base("Notecaster_Subject")
+        subjectdb.delete(key)
+        return ({
+            "status": 203,
+            "message": "Deleted Successfully."
+        })
+    
+    except:
+        return({
+            "status": 404,
+            "message": "Project Does not Exist"
+        })
