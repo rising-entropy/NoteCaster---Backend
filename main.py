@@ -3,7 +3,15 @@ from deta import Deta
 from pydantic import BaseModel
 import hashlib
 import jwt
+import io
+import base64
+import json
 from datetime import datetime, timedelta
+from fastapi import File, UploadFile
+from fastapi.responses import HTMLResponse, StreamingResponse
+
+from PIL import Image 
+import PIL 
 
 # pydantic to declare body of put or post
 app = FastAPI()
@@ -110,3 +118,69 @@ def loginUser(login: Login):
         "username": theUser['username'],
         "email": theUser['email'],
     })
+    
+    
+# class Subject(BaseModel):
+#     username = str
+#     name = str
+#     about = str
+        
+# @app.post("/api/subject")
+# def createSubject(subject: Subject):
+    
+#     username = subject.username
+#     name = subject.name
+#     about = subject.about
+    
+#     print(subject.username)
+#     return
+    
+#     subjectdb = deta.Base("Notecaster_Subject")
+    
+#     createSubject = {
+#         "username": username,
+#         "name": name,
+#         "about": about
+#     }
+    
+#     newSubject = subjectdb.insert(createSubject)
+#     return newSubject
+    
+#     try:
+#         newSubject = subjectdb.insert(createSubject)
+#         return newSubject
+#     except:
+#         return({
+#             "status": 500,
+#             "message": "Some Error Occurred."
+#         })
+        
+class Subject(BaseModel):
+    username: str
+    name: str
+    about: str
+
+@app.post("/api/subject")
+def createproject(subject: Subject):
+    
+    name = subject.name
+    about = subject.about
+    username = subject.username
+    
+    subjectdb = deta.Base("Notecaster_Subject")
+    
+    createSubject = {
+        "username": username,
+        "name": name,
+        "about": about
+    }
+    
+    try:
+        newSubject = subjectdb.insert(createSubject)
+        return newSubject
+    
+    except:
+        return({
+            "status": 500,
+            "message": "Some Error Occurred."
+        })
