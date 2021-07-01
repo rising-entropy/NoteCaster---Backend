@@ -156,10 +156,34 @@ def getprojects(username: str):
     allSubjects = next(subjectdb.fetch({"username": username}))
     return allSubjects
 
-
 @app.get("/api/subject/{key}")
 def getproject(key: str):
     
-    subjectdb = deta.Base("Notecaster_Subject")
-    theSubject = subjectdb.get(key)
-    return theSubject
+    try:
+        subjectdb = deta.Base("Notecaster_Subject")
+        theSubject = subjectdb.get(key)
+        return theSubject
+    
+    except:
+        return({
+            "status": 404,
+            "message": "Project Does not Exist"
+        })
+
+@app.put("/api/subject/{key}")
+def updateproject(key: str, subject: Subject):
+    
+    try:
+        subjectdb = deta.Base("Notecaster_Subject")
+        theSubject = subjectdb.get(key)
+        theSubject['name'] = subject.name
+        theSubject['about'] = subject.about
+        theSubject = subjectdb.put(theSubject)
+        return theSubject
+    
+    except:
+        return({
+            "status": 404,
+            "message": "Project Does not Exist"
+        })
+
