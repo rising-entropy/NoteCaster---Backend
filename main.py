@@ -124,7 +124,7 @@ class Subject(BaseModel):
     name: str
     about: str
 
-@app.post("/api/subject")
+@app.post("/api/subjects")
 def createproject(subject: Subject):
     
     name = subject.name
@@ -149,10 +149,17 @@ def createproject(subject: Subject):
             "message": "Some Error Occurred."
         })
         
-@app.get("/api/subject")
+@app.get("/api/subjects/{username}")
 def getprojects(username: str):
     
     subjectdb = deta.Base("Notecaster_Subject")
     allSubjects = next(subjectdb.fetch({"username": username}))
     return allSubjects
 
+
+@app.get("/api/subject/{key}")
+def getproject(key: str):
+    
+    subjectdb = deta.Base("Notecaster_Subject")
+    theSubject = subjectdb.get(key)
+    return theSubject
