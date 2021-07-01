@@ -118,42 +118,6 @@ def loginUser(login: Login):
         "username": theUser['username'],
         "email": theUser['email'],
     })
-    
-    
-# class Subject(BaseModel):
-#     username = str
-#     name = str
-#     about = str
-        
-# @app.post("/api/subject")
-# def createSubject(subject: Subject):
-    
-#     username = subject.username
-#     name = subject.name
-#     about = subject.about
-    
-#     print(subject.username)
-#     return
-    
-#     subjectdb = deta.Base("Notecaster_Subject")
-    
-#     createSubject = {
-#         "username": username,
-#         "name": name,
-#         "about": about
-#     }
-    
-#     newSubject = subjectdb.insert(createSubject)
-#     return newSubject
-    
-#     try:
-#         newSubject = subjectdb.insert(createSubject)
-#         return newSubject
-#     except:
-#         return({
-#             "status": 500,
-#             "message": "Some Error Occurred."
-#         })
         
 class Subject(BaseModel):
     username: str
@@ -184,3 +148,11 @@ def createproject(subject: Subject):
             "status": 500,
             "message": "Some Error Occurred."
         })
+        
+@app.get("/api/subject")
+def getprojects(username: str):
+    
+    subjectdb = deta.Base("Notecaster_Subject")
+    allSubjects = next(subjectdb.fetch({"username": username}))
+    return allSubjects
+
