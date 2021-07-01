@@ -1,4 +1,5 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Response
+from fastapi.responses import FileResponse
 from deta import Deta
 from pydantic import BaseModel
 import hashlib
@@ -251,3 +252,20 @@ def deleteImage(key: str = "", file: UploadFile = File(...)):
     
     theSubject = subjectdb.put(theSubject)
     return theSubject
+
+@app.get("/api/getsubjectimage/{key}")
+def getImage(key: str = ""):
+    
+    subjectDrive = deta.Drive("Notecaster_Subject")
+    subjectdb = deta.Base("Notecaster_Subject")
+    theSubject = subjectdb.get(key)
+    
+    try:
+        imageFile = subjectDrive.get(theSubject['image'])
+        imageExtension = theSubject['image'].split(".")[1]
+        return StreamingResponse(imageFile.iter_chunks(1024), media_type="image/"+imageExtension)
+    except:
+        return({
+            "status": 404,
+            "message": "Image Does not Exist"
+        })
