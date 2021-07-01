@@ -219,7 +219,7 @@ def getproject(key: str):
         
 
 @app.put("/api/subjectimage/{key}")
-async def updateImage(key: str = "", file: UploadFile = File(...)):
+def updateImage(key: str = "", file: UploadFile = File(...)):
     
     subjectDrive = deta.Drive("Notecaster_Subject")
     
@@ -235,4 +235,19 @@ async def updateImage(key: str = "", file: UploadFile = File(...)):
     theSubject['image'] = fileName
     theSubject = subjectdb.put(theSubject)
     theSubject['status'] = 200
+    return theSubject
+
+@app.put("/api/removesubjectimage/{key}")
+def deleteImage(key: str = "", file: UploadFile = File(...)):
+    
+    subjectDrive = deta.Drive("Notecaster_Subject")
+    subjectdb = deta.Base("Notecaster_Subject")
+    theSubject = subjectdb.get(key)
+    
+    thatImage = theSubject['image']
+    deleted_file = subjectDrive.delete(thatImage)
+    
+    del theSubject['image']
+    
+    theSubject = subjectdb.put(theSubject)
     return theSubject
