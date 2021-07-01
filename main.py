@@ -1,14 +1,17 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
 from deta import Deta
 from pydantic import BaseModel
 import hashlib
 import jwt
 import io
 import base64
+import uuid
 import json
 from datetime import datetime, timedelta
 from fastapi import File, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
+import asyncio
 
 from PIL import Image 
 import PIL 
@@ -17,6 +20,16 @@ import PIL
 app = FastAPI()
 a = "c02ff9ee_aRR2Gi3m4xe76"
 deta = Deta(a+"F8txNbk77WqghL4nKKs")
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
@@ -203,3 +216,23 @@ def getproject(key: str):
             "status": 404,
             "message": "Project Does not Exist"
         })
+        
+
+@app.put("/api/subjectimage/{key}")
+async def updateImage(key: str = "", file: UploadFile = File(...)):
+    
+    subjectDrive = deta.Drive("Notecaster_Subject")
+    
+    fileName = str(uuid.uuid4())
+    fileExtension = file.filename.split(".")[1]
+    fileName += "."+fileExtension
+    
+    subjectDrive.put(name=fileName, data=file.file, content_type="image/"+fileExtension)
+
+    #update image location in db
+    subjectdb = deta.Base("Notecaster_Subject")
+    theSubject = subjectdb.get(key)
+    theSubject['image'] = fileName
+    theSubject = subjectdb.put(theSubject)
+    theSubject['status'] = 200
+    return theSubject
