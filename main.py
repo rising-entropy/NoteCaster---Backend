@@ -14,9 +14,6 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 
-from PIL import Image 
-import PIL 
-
 # pydantic to declare body of put or post
 app = FastAPI()
 a = "c02ff9ee_aRR2Gi3m4xe76"
@@ -263,6 +260,36 @@ def getImage(key: str = ""):
     try:
         imageFile = subjectDrive.get(theSubject['image'])
         imageExtension = theSubject['image'].split(".")[1]
+        return StreamingResponse(imageFile.iter_chunks(1024), media_type="image/"+imageExtension)
+    except:
+        return({
+            "status": 404,
+            "message": "Image Does not Exist"
+        })
+        
+        
+@app.post("/api/uploadimage")
+def uploadImage(file: UploadFile = File(...)):
+    
+    subjectDrive = deta.Drive("Notecaster_Image")
+    
+    fileName = str(uuid.uuid4())
+    fileExtension = file.filename.split(".")[1]
+    fileName += "."+fileExtension
+    
+    subjectDrive.put(name=fileName, data=file.file, content_type="image/"+fileExtension)
+    
+    return {
+        "status": 200,
+        "link": "localhost:8000/getimage/"+fileName
+    }
+    
+@app.get("/api/getimage/{imageLocation}")
+def getImage(imageLocation: str):
+    subjectDrive = deta.Drive("Notecaster_Image")
+    try:
+        imageFile = subjectDrive.get(imageLocation)
+        imageExtension = imageLocation.split(".")[1]
         return StreamingResponse(imageFile.iter_chunks(1024), media_type="image/"+imageExtension)
     except:
         return({
