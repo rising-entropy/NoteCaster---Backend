@@ -296,3 +296,55 @@ def getImage(imageLocation: str):
             "status": 404,
             "message": "Image Does not Exist"
         })
+        
+
+#APIs for Notes
+
+#create a note for project
+class Note(BaseModel):
+    name: str
+    about: str
+    subject: str
+    username: str
+
+@app.post("/api/notes")
+def createproject(note: Note):
+    
+    notedb = deta.Base("Notecaster_Note")
+    
+    noter = {
+        "name": note.name,
+        "about": note.about,
+        "subject": note.subject,
+        "username": note.username
+    }
+    
+    try:
+        newNote = notedb.insert(noter)
+        return newNote
+    except:
+        return({
+            "status": 500,
+            "message": "Some Error Occurred."
+        })
+        
+class UpdateNote(BaseModel):
+    name: str
+    about: str
+        
+@app.put("/api/note/{key}")
+def createproject(key: str, updatenote: UpdateNote):
+    
+    notedb = deta.Base("Notecaster_Note")
+    
+    try:
+        theNote = notedb.get(key)
+        theNote['name'] = updatenote.name
+        theNote['about'] = updatenote.about
+        theNote = notedb.put(theNote)
+        return theNote
+    except:
+        return({
+            "status": 404,
+            "message": "Note Does not Exist"
+        })
