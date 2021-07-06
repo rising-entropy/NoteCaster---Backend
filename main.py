@@ -475,3 +475,10 @@ def createCardTwo(card: TypeTwoCard):
             "status": 500,
             "message": "Some Error Occurred."
         })
+        
+@app.get("/api/flashcards/{subjectID}")
+def getnotes(subjectID: str):
+    
+    carddb = deta.Base("Notecaster_Card")
+    allCards = next(carddb.fetch({"subject": subjectID}))
+    return allCards
