@@ -479,8 +479,19 @@ def createCardTwo(card: TypeTwoCard):
         })
         
 @app.get("/api/flashcards/{subjectID}")
-def getnotes(subjectID: str):
+def getCards(subjectID: str):
     
     carddb = deta.Base("Notecaster_Card")
     allCards = next(carddb.fetch({"subject": subjectID}))
     return allCards
+
+@app.get("/api/flashcard/{key}")
+def getCard(key: str):
+    carddb = deta.Base("Notecaster_Card")
+    theCard = carddb.get(key)
+    if theCard is None:
+        return({
+            "status": 404,
+            "message": "Card Does not Exist"
+        })
+    return theCard
