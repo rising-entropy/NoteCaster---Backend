@@ -357,7 +357,7 @@ def getnotes(subjectID: str):
 
 @app.delete("/api/note/{key}")
 def getproject(key: str):
-    
+        
     try:
         notedb = deta.Base("Notecaster_Note")
         notedb.delete(key)
@@ -371,3 +371,38 @@ def getproject(key: str):
             "status": 404,
             "message": "Note Does not Exist"
         })
+        
+@app.get("/api/note/{key}")
+def getnote(key: str):
+    
+    try:
+        notedb = deta.Base("Notecaster_Note")
+        theNote = notedb.get(key)
+        if theNote is None:
+            return({
+                "status": 404,
+                "message": "Note Does not Exist"
+            })
+        return theNote
+    
+    except:
+        return({
+            "status": 404,
+            "message": "Note Does not Exist"
+        })
+        
+class UpdateNoteDoc(BaseModel):
+    content: str        
+        
+@app.put("/api/updatenotedoc/{noteKey}")
+def updateNoteDoc(noteKey: str, docData: UpdateNoteDoc):
+    notedb = deta.Base("Notecaster_Note")
+    theNote = notedb.get(noteKey)
+    if theNote is None:
+        return({
+            "status": 404,
+            "message": "Note Does not Exist"
+        })
+    theNote['content'] = docData.content
+    theNote = notedb.put(theNote)
+    return theNote
