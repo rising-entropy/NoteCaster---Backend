@@ -214,7 +214,6 @@ def getproject(key: str):
             "status": 404,
             "message": "Project Does not Exist"
         })
-        
 
 @app.put("/api/subjectimage/{key}")
 def updateImage(key: str = "", file: UploadFile = File(...)):
@@ -343,6 +342,30 @@ def createproject(key: str, updatenote: UpdateNote):
         theNote['about'] = updatenote.about
         theNote = notedb.put(theNote)
         return theNote
+    except:
+        return({
+            "status": 404,
+            "message": "Note Does not Exist"
+        })
+        
+@app.get("/api/notes/{subjectID}")
+def getnotes(subjectID: str):
+    
+    notedb = deta.Base("Notecaster_Note")
+    allNotes = next(notedb.fetch({"subject": subjectID}))
+    return allNotes
+
+@app.delete("/api/note/{key}")
+def getproject(key: str):
+    
+    try:
+        notedb = deta.Base("Notecaster_Note")
+        notedb.delete(key)
+        return ({
+            "status": 203,
+            "message": "Deleted Successfully."
+        })
+    
     except:
         return({
             "status": 404,
