@@ -406,3 +406,72 @@ def updateNoteDoc(noteKey: str, docData: UpdateNoteDoc):
     theNote['content'] = docData.content
     theNote = notedb.put(theNote)
     return theNote
+
+
+#Flashcards APIs
+
+class TypeOneCard(BaseModel):
+    noteText: str
+    imageLink: str
+    subject: str
+    
+class TypeTwoCard(BaseModel):
+    question: str
+    questionImageLink: str
+    answer: str
+    answerImageLink: str
+    subject: str
+
+@app.post("/api/flashcards/type1")
+def createCardOne(card: TypeOneCard):
+    
+    noteText = card.noteText
+    imageLink = card.imageLink
+    subject = card.subject
+    
+    carddb = deta.Base("Notecaster_Card")
+    
+    createCard = {
+        "noteText": noteText,
+        "imageLink": imageLink,
+        "subject": subject
+    }
+    
+    try:
+        newCard = carddb.insert(createCard)
+        return newCard
+    
+    except:
+        return({
+            "status": 500,
+            "message": "Some Error Occurred."
+        })
+        
+@app.post("/api/flashcards/type2")
+def createCardTwo(card: TypeTwoCard):
+    
+    question = card.question
+    questionImageLink = card.questionImageLink
+    answer = card.answer
+    answerImageLink = card.answerImageLink
+    subject = card.subject
+    
+    carddb = deta.Base("Notecaster_Card")
+    
+    createCard = {
+        "question": question,
+        "questionImageLink": questionImageLink,
+        "answer": answer,
+        "answerImageLink": answerImageLink,
+        "subject": subject
+    }
+    
+    try:
+        newCard = carddb.insert(createCard)
+        return newCard
+    
+    except:
+        return({
+            "status": 500,
+            "message": "Some Error Occurred."
+        })
