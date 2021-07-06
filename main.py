@@ -495,3 +495,63 @@ def getCard(key: str):
             "message": "Card Does not Exist"
         })
     return theCard
+
+@app.delete("/api/flashcard/{key}")
+def deleteCard(key: str):
+    try:
+        carddb = deta.Base("Notecaster_Card")
+        carddb.delete(key)
+        return ({
+            "status": 203,
+            "message": "Deleted Successfully."
+        })
+    except:
+        return({
+            "status": 404,
+            "message": "Card Does not Exist"
+        })
+
+class UpdateTypeOneCard(BaseModel):
+    noteText: str
+    imageLink: str
+
+@app.put("/api/flashcard/type1/{key}")
+def updateCardOne(key: str, card: UpdateTypeOneCard):
+    
+    try:
+        carddb = deta.Base("Notecaster_Card")
+        theCard = carddb.get(key)
+        theCard['noteText'] = card.noteText
+        theCard['imageLink'] = card.imageLink
+        theCard = carddb.put(theCard)
+        return theCard
+    
+    except:
+        return({
+            "status": 404,
+            "message": "Card Does not Exist"
+        })
+        
+class UpdateTypeTwoCard(BaseModel):
+    question: str
+    questionImageLink: str
+    answer: str
+    answerImageLink: str
+    
+@app.put("/api/flashcard/type2/{key}")
+def updateCardTwo(key: str, card: UpdateTypeTwoCard):
+    try:
+        carddb = deta.Base("Notecaster_Card")
+        theCard = carddb.get(key)
+        theCard['question'] = card.question
+        theCard['questionImageLink'] = card.questionImageLink
+        theCard['answer'] = card.answer
+        theCard['answerImageLink'] = card.answerImageLink
+        theCard = carddb.put(theCard)
+        return theCard
+    
+    except:
+        return({
+            "status": 404,
+            "message": "Card Does not Exist"
+        })
