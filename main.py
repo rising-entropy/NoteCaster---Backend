@@ -432,6 +432,7 @@ def createCardOne(card: TypeOneCard):
     carddb = deta.Base("Notecaster_Card")
     
     createCard = {
+        "type": 1,
         "noteText": noteText,
         "imageLink": imageLink,
         "subject": subject
@@ -459,6 +460,7 @@ def createCardTwo(card: TypeTwoCard):
     carddb = deta.Base("Notecaster_Card")
     
     createCard = {
+        "type": 2,
         "question": question,
         "questionImageLink": questionImageLink,
         "answer": answer,
