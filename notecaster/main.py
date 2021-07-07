@@ -1,5 +1,6 @@
-from fastapi import FastAPI, File, UploadFile, Response
+from fastapi import FastAPI, File, UploadFile, Response, Header
 from fastapi.responses import FileResponse
+from typing import Optional
 from deta import Deta
 from pydantic import BaseModel
 import hashlib
@@ -62,8 +63,7 @@ def signup(user: User):
             "message": "User already exists."
         })
         
-    JWT_SECRET = 'UnaiSimon$$$'
-    JWT_SECRET += user.username
+    JWT_SECRET = 'UnaiSimon'
     JWT_ALGORITHM = 'HS256'
     JWT_EXP_DELTA_SECONDS = 2628000
     payload = {'exp': datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)}        
@@ -110,8 +110,7 @@ def loginUser(login: Login):
         })
         
     #generate token
-    JWT_SECRET = 'UnaiSimon$$$'
-    JWT_SECRET += theUser['username']
+    JWT_SECRET = 'UnaiSimon'
     JWT_ALGORITHM = 'HS256'
     JWT_EXP_DELTA_SECONDS = 2628000
     payload = {'exp': datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)}        
