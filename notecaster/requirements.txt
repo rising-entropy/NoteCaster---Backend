@@ -2,5 +2,4 @@ fastapi
 deta
 pydantic
 jwt
-uuid
-asyncio
+python-multipart

@@ -10,7 +10,6 @@ from datetime import datetime, timedelta
 from fastapi import File, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-import asyncio
 
 # pydantic to declare body of put or post
 app = FastAPI()
