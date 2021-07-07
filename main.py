@@ -1,5 +1,6 @@
-from fastapi import FastAPI, File, UploadFile, Response
+from fastapi import FastAPI, File, UploadFile, Response, Header
 from fastapi.responses import FileResponse
+from typing import Optional
 from deta import Deta
 from pydantic import BaseModel
 import hashlib
@@ -10,7 +11,6 @@ from datetime import datetime, timedelta
 from fastapi import File, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-import asyncio
 
 # pydantic to declare body of put or post
 app = FastAPI()
@@ -26,6 +26,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+def validateToken(token):
+    try:
+        validation = jwt.decode(token, 'UnaiSimon', algorithms="HS256")
+        return True
+    except:
+        return False
 
 
 @app.get("/")
@@ -63,8 +70,7 @@ def signup(user: User):
             "message": "User already exists."
         })
         
-    JWT_SECRET = 'UnaiSimon$$$'
-    JWT_SECRET += user.username
+    JWT_SECRET = 'UnaiSimon'
     JWT_ALGORITHM = 'HS256'
     JWT_EXP_DELTA_SECONDS = 2628000
     payload = {'exp': datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)}        
@@ -111,8 +117,7 @@ def loginUser(login: Login):
         })
         
     #generate token
-    JWT_SECRET = 'UnaiSimon$$$'
-    JWT_SECRET += theUser['username']
+    JWT_SECRET = 'UnaiSimon'
     JWT_ALGORITHM = 'HS256'
     JWT_EXP_DELTA_SECONDS = 2628000
     payload = {'exp': datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)}        
@@ -134,7 +139,14 @@ class Subject(BaseModel):
     about: str
 
 @app.post("/api/subjects")
-def createproject(subject: Subject):
+def createproject(subject: Subject, Authorization: Optional[str] = Header(None)):
+    
+    print(Authorization)
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     name = subject.name
     about = subject.about
