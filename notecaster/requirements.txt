@@ -1,0 +1,6 @@
+fastapi
+deta
+pydantic
+jwt
+uuid
+asyncio

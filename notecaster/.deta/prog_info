@@ -1,0 +1,1 @@
+{"id":"9b83e446-eedd-4c4e-afdb-2b64ff34059f","space":6203,"runtime":"python3.7","name":"notecaster","path":"jbj2l8","project":"c02ff9ee","account":"144798365827","region":"ap-southeast-1","deps":["deta","pydantic","jwt","uuid","asyncio","fastapi"],"envs":null,"public":true,"log_level":"debug","cron":""}
