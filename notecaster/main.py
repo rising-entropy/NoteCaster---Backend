@@ -337,7 +337,7 @@ def uploadImage(file: UploadFile = File(...), Authorization: Optional[str] = Hea
     
     return {
         "status": 200,
-        "link": "localhost:8000/getimage/"+fileName
+        "link": "https://notecaster-backend.deta.dev/getimage/"+fileName
     }
     
 @app.get("/api/getimage/{imageLocation}")
