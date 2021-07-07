@@ -141,7 +141,6 @@ class Subject(BaseModel):
 @app.post("/api/subjects")
 def createproject(subject: Subject, Authorization: Optional[str] = Header(None)):
     
-    print(Authorization)
     if validateToken(Authorization) is False:
         return {
             "status": 401,
@@ -171,14 +170,26 @@ def createproject(subject: Subject, Authorization: Optional[str] = Header(None))
         })
         
 @app.get("/api/subjects/{username}")
-def getprojects(username: str):
+def getprojects(username: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     subjectdb = deta.Base("Notecaster_Subject")
     allSubjects = next(subjectdb.fetch({"username": username}))
     return allSubjects
 
 @app.get("/api/subject/{key}")
-def getproject(key: str):
+def getproject(key: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     try:
         subjectdb = deta.Base("Notecaster_Subject")
@@ -192,7 +203,13 @@ def getproject(key: str):
         })
 
 @app.put("/api/subject/{key}")
-def updateproject(key: str, subject: Subject):
+def updateproject(key: str, subject: Subject, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     try:
         subjectdb = deta.Base("Notecaster_Subject")
@@ -209,7 +226,13 @@ def updateproject(key: str, subject: Subject):
         })
 
 @app.delete("/api/subject/{key}")
-def getproject(key: str):
+def getproject(key: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     try:
         subjectdb = deta.Base("Notecaster_Subject")
@@ -226,7 +249,13 @@ def getproject(key: str):
         })
 
 @app.put("/api/subjectimage/{key}")
-def updateImage(key: str = "", file: UploadFile = File(...)):
+def updateImage(key: str = "", file: UploadFile = File(...), Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     subjectDrive = deta.Drive("Notecaster_Subject")
     
@@ -245,7 +274,13 @@ def updateImage(key: str = "", file: UploadFile = File(...)):
     return theSubject
 
 @app.put("/api/removesubjectimage/{key}")
-def deleteImage(key: str = "", file: UploadFile = File(...)):
+def deleteImage(key: str = "", file: UploadFile = File(...), Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     subjectDrive = deta.Drive("Notecaster_Subject")
     subjectdb = deta.Base("Notecaster_Subject")
@@ -260,7 +295,13 @@ def deleteImage(key: str = "", file: UploadFile = File(...)):
     return theSubject
 
 @app.get("/api/getsubjectimage/{key}")
-def getImage(key: str = ""):
+def getImage(key: str = "", Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     subjectDrive = deta.Drive("Notecaster_Subject")
     subjectdb = deta.Base("Notecaster_Subject")
@@ -278,7 +319,13 @@ def getImage(key: str = ""):
         
         
 @app.post("/api/uploadimage")
-def uploadImage(file: UploadFile = File(...)):
+def uploadImage(file: UploadFile = File(...), Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     subjectDrive = deta.Drive("Notecaster_Image")
     
@@ -294,7 +341,14 @@ def uploadImage(file: UploadFile = File(...)):
     }
     
 @app.get("/api/getimage/{imageLocation}")
-def getImage(imageLocation: str):
+def getImage(imageLocation: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
     subjectDrive = deta.Drive("Notecaster_Image")
     try:
         imageFile = subjectDrive.get(imageLocation)
@@ -317,7 +371,13 @@ class Note(BaseModel):
     username: str
 
 @app.post("/api/notes")
-def createproject(note: Note):
+def createproject(note: Note, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     notedb = deta.Base("Notecaster_Note")
     
@@ -342,7 +402,13 @@ class UpdateNote(BaseModel):
     about: str
         
 @app.put("/api/note/{key}")
-def createproject(key: str, updatenote: UpdateNote):
+def createproject(key: str, updatenote: UpdateNote, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     notedb = deta.Base("Notecaster_Note")
     
@@ -359,14 +425,26 @@ def createproject(key: str, updatenote: UpdateNote):
         })
         
 @app.get("/api/notes/{subjectID}")
-def getnotes(subjectID: str):
+def getnotes(subjectID: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     notedb = deta.Base("Notecaster_Note")
     allNotes = next(notedb.fetch({"subject": subjectID}))
     return allNotes
 
 @app.delete("/api/note/{key}")
-def getproject(key: str):
+def getproject(key: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
         
     try:
         notedb = deta.Base("Notecaster_Note")
@@ -383,7 +461,13 @@ def getproject(key: str):
         })
         
 @app.get("/api/note/{key}")
-def getnote(key: str):
+def getnote(key: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     try:
         notedb = deta.Base("Notecaster_Note")
@@ -405,7 +489,14 @@ class UpdateNoteDoc(BaseModel):
     content: str        
         
 @app.put("/api/updatenotedoc/{noteKey}")
-def updateNoteDoc(noteKey: str, docData: UpdateNoteDoc):
+def updateNoteDoc(noteKey: str, docData: UpdateNoteDoc, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
     notedb = deta.Base("Notecaster_Note")
     theNote = notedb.get(noteKey)
     if theNote is None:
@@ -433,7 +524,13 @@ class TypeTwoCard(BaseModel):
     subject: str
 
 @app.post("/api/flashcards/type1")
-def createCardOne(card: TypeOneCard):
+def createCardOne(card: TypeOneCard, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     noteText = card.noteText
     imageLink = card.imageLink
@@ -459,7 +556,13 @@ def createCardOne(card: TypeOneCard):
         })
         
 @app.post("/api/flashcards/type2")
-def createCardTwo(card: TypeTwoCard):
+def createCardTwo(card: TypeTwoCard, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     question = card.question
     questionImageLink = card.questionImageLink
@@ -489,14 +592,27 @@ def createCardTwo(card: TypeTwoCard):
         })
         
 @app.get("/api/flashcards/{subjectID}")
-def getCards(subjectID: str):
+def getCards(subjectID: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     carddb = deta.Base("Notecaster_Card")
     allCards = next(carddb.fetch({"subject": subjectID}))
     return allCards
 
 @app.get("/api/flashcard/{key}")
-def getCard(key: str):
+def getCard(key: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
     carddb = deta.Base("Notecaster_Card")
     theCard = carddb.get(key)
     if theCard is None:
@@ -507,7 +623,14 @@ def getCard(key: str):
     return theCard
 
 @app.delete("/api/flashcard/{key}")
-def deleteCard(key: str):
+def deleteCard(key: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
     try:
         carddb = deta.Base("Notecaster_Card")
         carddb.delete(key)
@@ -526,7 +649,13 @@ class UpdateTypeOneCard(BaseModel):
     imageLink: str
 
 @app.put("/api/flashcard/type1/{key}")
-def updateCardOne(key: str, card: UpdateTypeOneCard):
+def updateCardOne(key: str, card: UpdateTypeOneCard, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     try:
         carddb = deta.Base("Notecaster_Card")
@@ -549,7 +678,14 @@ class UpdateTypeTwoCard(BaseModel):
     answerImageLink: str
     
 @app.put("/api/flashcard/type2/{key}")
-def updateCardTwo(key: str, card: UpdateTypeTwoCard):
+def updateCardTwo(key: str, card: UpdateTypeTwoCard, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
     try:
         carddb = deta.Base("Notecaster_Card")
         theCard = carddb.get(key)
