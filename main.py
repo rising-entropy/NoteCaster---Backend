@@ -701,3 +701,54 @@ def updateCardTwo(key: str, card: UpdateTypeTwoCard, Authorization: Optional[str
             "status": 404,
             "message": "Card Does not Exist"
         })
+
+
+#Sticky Notes
+#unlimited sticky notes w.r.t. subject
+
+class StickyNote(BaseModel):
+    username: str
+    subjectID: str
+    data: str
+    imageLink: str
+    backgroundColor: str
+    imageColor: str
+
+@app.post("/api/stickynotes")
+def createproject(stickyNote: StickyNote, Authorization: Optional[str] = Header(None)):
+    
+    # if validateToken(Authorization) is False:
+    #     return {
+    #         "status": 401,
+    #         "message": "Invalid Token"
+    #     }
+    
+    username = stickyNote.username
+    subjectID = stickyNote.subjectID
+    data = stickyNote.data
+    imageLink = stickyNote.imageLink
+    backgroundColor = stickyNote.backgroundColor
+    imageColor = stickyNote.imageColor
+    
+    stickynotedb = deta.Base("Notecaster_StickyNote")
+    
+    createStickyNote = {
+        "username": username,
+        "subjectID": subjectID,
+        "data": data,
+        "imageLink": imageLink,
+        "backgroundColor": backgroundColor,
+        "imageColor": imageColor
+    }
+    
+    try:
+        newStickyNote = stickynotedb.insert(createStickyNote)
+        return newStickyNote
+    
+    except:
+        return({
+            "status": 500,
+            "message": "Some Error Occurred."
+        })
+     
+     
