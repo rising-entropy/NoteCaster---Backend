@@ -782,3 +782,24 @@ def getprojects(key: str, Authorization: Optional[str] = Header(None)):
         })
     return theStickyNote
 
+@app.delete("/api/stickynote/{key}")
+def deleteCard(key: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
+    try:
+        stickynotedb = deta.Base("Notecaster_StickyNote")
+        stickynotedb.delete(key)
+        return ({
+            "status": 203,
+            "message": "Deleted Successfully."
+        })
+    except:
+        return({
+            "status": 404,
+            "message": "Sticky Note Does not Exist"
+        })
