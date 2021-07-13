@@ -803,3 +803,34 @@ def deleteCard(key: str, Authorization: Optional[str] = Header(None)):
             "status": 404,
             "message": "Sticky Note Does not Exist"
         })
+        
+class UpdateStickyNote(BaseModel):
+    data: str
+    imageLink: str
+    backgroundColor: str
+    imageColor: str
+    
+@app.put("/api/stickynote/{key}")
+def updateStickyNote(key: str, stickyNote: UpdateStickyNote, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
+    try:
+        stickynotedb = deta.Base("Notecaster_StickyNote")
+        theStickyNote = stickynotedb.get(key)
+        theStickyNote['data'] = stickyNote.data
+        theStickyNote['imageLink'] = stickyNote.imageLink
+        theStickyNote['backgroundColor'] = stickyNote.backgroundColor
+        theStickyNote['imageColor'] = stickyNote.imageColor
+        theStickyNote = stickynotedb.put(theStickyNote)
+        return theStickyNote
+    
+    except:
+        return({
+            "status": 404,
+            "message": "Card Does not Exist"
+        })
