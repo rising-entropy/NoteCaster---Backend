@@ -751,4 +751,34 @@ def createproject(stickyNote: StickyNote, Authorization: Optional[str] = Header(
             "message": "Some Error Occurred."
         })
      
-     
+@app.get("/api/stickynotes/{subjectID}")
+def getprojects(subjectID: str, Authorization: Optional[str] = Header(None)):
+    
+    # if validateToken(Authorization) is False:
+    #     return {
+    #         "status": 401,
+    #         "message": "Invalid Token"
+    #     }
+    
+    stickynotedb = deta.Base("Notecaster_StickyNote")
+    allStickyNotes = next(stickynotedb.fetch({"subjectID": subjectID}))
+    return allStickyNotes
+
+@app.get("/api/stickynote/{key}")
+def getprojects(key: str, Authorization: Optional[str] = Header(None)):
+    
+    # if validateToken(Authorization) is False:
+    #     return {
+    #         "status": 401,
+    #         "message": "Invalid Token"
+    #     }
+    
+    stickynotedb = deta.Base("Notecaster_StickyNote")
+    theStickyNote = stickynotedb.get(key)
+    if theStickyNote is None:
+        return({
+            "status": 404,
+            "message": "Sticky Note Does not Exist"
+        })
+    return theStickyNote
+
