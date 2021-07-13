@@ -717,11 +717,11 @@ class StickyNote(BaseModel):
 @app.post("/api/stickynotes")
 def createproject(stickyNote: StickyNote, Authorization: Optional[str] = Header(None)):
     
-    # if validateToken(Authorization) is False:
-    #     return {
-    #         "status": 401,
-    #         "message": "Invalid Token"
-    #     }
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     username = stickyNote.username
     subjectID = stickyNote.subjectID
@@ -754,11 +754,11 @@ def createproject(stickyNote: StickyNote, Authorization: Optional[str] = Header(
 @app.get("/api/stickynotes/{subjectID}")
 def getprojects(subjectID: str, Authorization: Optional[str] = Header(None)):
     
-    # if validateToken(Authorization) is False:
-    #     return {
-    #         "status": 401,
-    #         "message": "Invalid Token"
-    #     }
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     stickynotedb = deta.Base("Notecaster_StickyNote")
     allStickyNotes = next(stickynotedb.fetch({"subjectID": subjectID}))
@@ -767,11 +767,11 @@ def getprojects(subjectID: str, Authorization: Optional[str] = Header(None)):
 @app.get("/api/stickynote/{key}")
 def getprojects(key: str, Authorization: Optional[str] = Header(None)):
     
-    # if validateToken(Authorization) is False:
-    #     return {
-    #         "status": 401,
-    #         "message": "Invalid Token"
-    #     }
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
     
     stickynotedb = deta.Base("Notecaster_StickyNote")
     theStickyNote = stickynotedb.get(key)
