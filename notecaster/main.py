@@ -701,3 +701,136 @@ def updateCardTwo(key: str, card: UpdateTypeTwoCard, Authorization: Optional[str
             "status": 404,
             "message": "Card Does not Exist"
         })
+        
+
+#Sticky Notes
+#unlimited sticky notes w.r.t. subject
+
+class StickyNote(BaseModel):
+    username: str
+    subjectID: str
+    data: str
+    imageLink: str
+    backgroundColor: str
+    imageColor: str
+
+@app.post("/api/stickynotes")
+def createproject(stickyNote: StickyNote, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
+    username = stickyNote.username
+    subjectID = stickyNote.subjectID
+    data = stickyNote.data
+    imageLink = stickyNote.imageLink
+    backgroundColor = stickyNote.backgroundColor
+    imageColor = stickyNote.imageColor
+    
+    stickynotedb = deta.Base("Notecaster_StickyNote")
+    
+    createStickyNote = {
+        "username": username,
+        "subjectID": subjectID,
+        "data": data,
+        "imageLink": imageLink,
+        "backgroundColor": backgroundColor,
+        "imageColor": imageColor
+    }
+    
+    try:
+        newStickyNote = stickynotedb.insert(createStickyNote)
+        return newStickyNote
+    
+    except:
+        return({
+            "status": 500,
+            "message": "Some Error Occurred."
+        })
+     
+@app.get("/api/stickynotes/{subjectID}")
+def getprojects(subjectID: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
+    stickynotedb = deta.Base("Notecaster_StickyNote")
+    allStickyNotes = next(stickynotedb.fetch({"subjectID": subjectID}))
+    return allStickyNotes
+
+@app.get("/api/stickynote/{key}")
+def getprojects(key: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
+    stickynotedb = deta.Base("Notecaster_StickyNote")
+    theStickyNote = stickynotedb.get(key)
+    if theStickyNote is None:
+        return({
+            "status": 404,
+            "message": "Sticky Note Does not Exist"
+        })
+    return theStickyNote
+
+@app.delete("/api/stickynote/{key}")
+def deleteCard(key: str, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
+    try:
+        stickynotedb = deta.Base("Notecaster_StickyNote")
+        stickynotedb.delete(key)
+        return ({
+            "status": 203,
+            "message": "Deleted Successfully."
+        })
+    except:
+        return({
+            "status": 404,
+            "message": "Sticky Note Does not Exist"
+        })
+        
+class UpdateStickyNote(BaseModel):
+    data: str
+    imageLink: str
+    backgroundColor: str
+    imageColor: str
+    
+@app.put("/api/stickynote/{key}")
+def updateStickyNote(key: str, stickyNote: UpdateStickyNote, Authorization: Optional[str] = Header(None)):
+    
+    if validateToken(Authorization) is False:
+        return {
+            "status": 401,
+            "message": "Invalid Token"
+        }
+    
+    try:
+        stickynotedb = deta.Base("Notecaster_StickyNote")
+        theStickyNote = stickynotedb.get(key)
+        theStickyNote['data'] = stickyNote.data
+        theStickyNote['imageLink'] = stickyNote.imageLink
+        theStickyNote['backgroundColor'] = stickyNote.backgroundColor
+        theStickyNote['imageColor'] = stickyNote.imageColor
+        theStickyNote = stickynotedb.put(theStickyNote)
+        return theStickyNote
+    
+    except:
+        return({
+            "status": 404,
+            "message": "Card Does not Exist"
+        })
